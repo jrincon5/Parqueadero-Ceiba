@@ -4,6 +4,7 @@ import static org.mockito.Matchers.intThat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Parqueadero {
     private ArrayList<Celda> celdasCarro = new ArrayList<>();
@@ -24,23 +25,33 @@ public class Parqueadero {
     public void setCeldasMoto(ArrayList<Celda> celdasMoto) {
         this.celdasMoto = celdasMoto;
     }
+    
+    public Fecha getFechaActual() {
+    	Calendar Cal = Calendar.getInstance();
+    	int año=Cal.get(Calendar.YEAR);
+    	int mes=Cal.get(Calendar.MONTH);
+    	int diaMes=Cal.get(Calendar.DAY_OF_MONTH);
+    	int horaDia=Cal.get(Calendar.HOUR_OF_DAY);
+    	int minuto=Cal.get(Calendar.MINUTE);
+    	return new Fecha(año,mes,diaMes,horaDia,minuto);
+    }
 
     public boolean ingresarCarro(String placa, int cc, String propietario){
         if(celdasCarro.size()<=20){
             if(placa.startsWith("A")){
                 if(Calendar.DAY_OF_WEEK!=0 && Calendar.DAY_OF_WEEK!=1){
-                    System.out.print("No esta autorizado a ingresar");
+                    //System.out.print("No esta autorizado a ingresar");
                     return false;
                 }
             }
-            Fecha f = new Fecha(Calendar.getInstance());
+            Fecha f = getFechaActual();
             Carro c = new Carro(placa,cc,propietario);
             Celda celda = new Celda(c,f);
             celdasCarro.add(celda);
-            System.out.print("Ingreso un carro:");
+            //System.out.print("Ingreso un carro:");
             return true;
         }else{
-            System.out.print("Parqueadero lleno");
+            //System.out.print("Parqueadero lleno");
         }
         return false;
     }
@@ -56,35 +67,30 @@ public class Parqueadero {
         return false;
     }
 
-    public String generarCobro(int HEntrada, int DEntrada){
-        int totalPagar=0;
-        if (Calendar.HOUR_OF_DAY-HEntrada<9){
-            totalPagar=8000;
+    //Metodo que calcula el total a pagar
+    public int generarCobro(Fecha fechaEntrada, Fecha fechaSalida){
+        int horasTotales=(int)calcularHorasTotales(fechaEntrada, fechaSalida);
+        int diasAPagar = horasTotales / 24;
+        int horasAPagar=0;
+        if((horasTotales % 24)>=9 && (horasTotales % 24)<=23) {
+        	diasAPagar++;
         }else {
-            totalPagar = (Calendar.DAY_OF_WEEK - HEntrada) * 1000;
-        }
-
-        return "Total a pagar: "+totalPagar;
+        	horasAPagar = horasTotales % 24;
+        }        
+        int totalAPagar=(diasAPagar*8000)+(horasAPagar*1000);
+        return totalAPagar;
     }
     
-    /*public int calcularHorasTotales(int HEntrada, int DEntrada, int HSalida, int DSalida) {
-    	boolean diaNoIgual=true;
-    	boolean horaNoIgual=true;
-    	int totalHoras=0;
-    	
-    	for(int i=DEntrada; ((i<7) && (diaNoIgual)); i++) {
-    		
-    		for(int j=HEntrada; (j<24) && (horaNoIgual); j++) {
-    			totalHoras++;
-    			
-    			if(j==HSalida) horaNoIgual==false;
-    			
-    		}
-    	}
-    	
-    	return 0;
-    }*/
-
+    //Metodo que calcula la diferencia entre dos fechas y la devuelve en horas
+    public long calcularHorasTotales(Fecha entrada, Fecha salida) {
+    	Date d1=entrada.getTime();
+    	Date d2=salida.getTime();
+    	long dif=(d2.getTime()-d1.getTime()) / (1000 * 60 * 60);
+    	if((d2.getTime()-d1.getTime()) % (1000 * 60 * 60)!=0) dif++;
+    	//System.out.println("Horas: "+(d2.getTime()-d1.getTime()) / (1000 * 60 * 60));
+    	//System.out.println("Modulo: "+(d2.getTime()-d1.getTime()) % (1000 * 60 * 60));
+    	return dif;
+    }
 
     /*public boolean ingresarMoto(String placa, int cc, String propietario){
         if(celdasMoto.size()<=20){

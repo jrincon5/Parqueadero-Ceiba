@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import co.com.ceiba.julian.parqueadero.Parqueadero.modelo.Carro;
 import co.com.ceiba.julian.parqueadero.Parqueadero.modelo.Celda;
+import co.com.ceiba.julian.parqueadero.Parqueadero.modelo.Fecha;
 import co.com.ceiba.julian.parqueadero.Parqueadero.modelo.Parqueadero;
 
 public class ParqueaderoTest {
@@ -41,5 +42,39 @@ public class ParqueaderoTest {
 	public void sacarCarroTest() {
 		assertFalse(park.sacarCarro("WSW04D"));
 	}
-
+	
+	@Test
+	public void calcularHoras() {
+		Fecha entrada = new Fecha(2017, 1, 1, 3, 0);
+    	Fecha salida = new Fecha(2017, 1, 1, 8, 0);
+		assertEquals(5, park.calcularHorasTotales(entrada, salida));
+	}
+	
+	@Test
+	public void calcularHorasConMinutosMax() {
+		Fecha entrada = new Fecha(2017, 1, 1, 3, 0);
+    	Fecha salida = new Fecha(2017, 1, 1, 8, 1);
+		assertEquals(6, park.calcularHorasTotales(entrada, salida));
+	}
+	
+	@Test
+	public void calcularHorasConMinutosMin() {
+		Fecha entrada = new Fecha(2017, 1, 1, 3, 0);
+    	Fecha salida = new Fecha(2017, 1, 1, 7, 59);
+		assertEquals(5, park.calcularHorasTotales(entrada, salida));
+	}
+	
+	@Test
+	public void calcularCobroHoras() {
+		Fecha entrada = new Fecha(2017, 1, 1, 3, 0);
+    	Fecha salida = new Fecha(2017, 1, 1, 7, 59);
+		assertEquals(5000, park.generarCobro(entrada, salida));
+	}
+	
+	@Test
+	public void calcularCobroHorasDias() {
+		Fecha entrada = new Fecha(2017, 1, 1, 3, 0);
+    	Fecha salida = new Fecha(2017, 1, 2, 3, 1);
+		assertEquals(9000, park.generarCobro(entrada, salida));
+	}
 }
