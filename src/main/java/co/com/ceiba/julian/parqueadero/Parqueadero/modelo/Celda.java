@@ -2,20 +2,20 @@ package co.com.ceiba.julian.parqueadero.Parqueadero.modelo;
 
 
 public class Celda {
-    private Carro carro;
+    private Vehiculo vehiculo;
     private Fecha fecha;
 
-    public Celda(Carro carro, Fecha fecha) {
-        this.carro = carro;
+    public Celda(Vehiculo vehiculo, Fecha fecha) {
+        this.vehiculo = vehiculo;
         this.fecha = fecha;
     }
 
-    public Carro getCarro() {
-        return carro;
+    public Vehiculo getVehiculo() {
+        return vehiculo;
     }
 
-    public void setCarro(Carro carro) {
-        this.carro = carro;
+    public void setVehiculo(Vehiculo vehiculo) {
+        this.vehiculo = vehiculo;
     }
 
     public Fecha getFecha() {

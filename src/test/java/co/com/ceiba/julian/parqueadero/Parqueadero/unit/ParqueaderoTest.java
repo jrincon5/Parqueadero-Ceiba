@@ -68,13 +68,13 @@ public class ParqueaderoTest {
 	public void calcularCobroHoras() {
 		Fecha entrada = new Fecha(2017, 1, 1, 3, 0);
     	Fecha salida = new Fecha(2017, 1, 1, 7, 59);
-		assertEquals(5000, park.generarCobro(entrada, salida));
+		assertEquals(5000, park.generarCobroCarros(entrada, salida));
 	}
 	
 	@Test
 	public void calcularCobroHorasDias() {
 		Fecha entrada = new Fecha(2017, 1, 1, 3, 0);
     	Fecha salida = new Fecha(2017, 1, 2, 3, 1);
-		assertEquals(9000, park.generarCobro(entrada, salida));
+		assertEquals(9000, park.generarCobroCarros(entrada, salida));
 	}
 }

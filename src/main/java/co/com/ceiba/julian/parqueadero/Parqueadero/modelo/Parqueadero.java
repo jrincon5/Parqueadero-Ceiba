@@ -1,14 +1,18 @@
 package co.com.ceiba.julian.parqueadero.Parqueadero.modelo;
 
-import static org.mockito.Matchers.intThat;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class Parqueadero {
+public class Parqueadero{
     private ArrayList<Celda> celdasCarro = new ArrayList<>();
     private ArrayList<Celda> celdasMoto = new ArrayList<>();
+    static final int HORACARRO=1000;
+    static final int HORAMOTO=500;
+    static final int DIACARRO=8000;
+    static final int DIAMOTO=4000;
+    static final int MOTOALTOCILINDRAJE=2000;
     
     public ArrayList<Celda> getCeldasCarro() {
         return celdasCarro;
@@ -37,13 +41,9 @@ public class Parqueadero {
     }
 
     public boolean ingresarCarro(String placa, int cc, String propietario){
+    	placa=placa.toUpperCase();
         if(celdasCarro.size()<=20){
-            if(placa.startsWith("A")){
-                if(Calendar.DAY_OF_WEEK!=0 && Calendar.DAY_OF_WEEK!=1){
-                    //System.out.print("No esta autorizado a ingresar");
-                    return false;
-                }
-            }
+            if(picoYPlaca(placa))return false;
             Fecha f = getFechaActual();
             Carro c = new Carro(placa,cc,propietario);
             Celda celda = new Celda(c,f);
@@ -55,10 +55,26 @@ public class Parqueadero {
         }
         return false;
     }
+    
+    public boolean ingresarMoto(String placa, int cc, String propietario){
+    	placa=placa.toUpperCase();
+        if(celdasMoto.size()<=10){
+            if(picoYPlaca(placa))return false;
+            Fecha f = getFechaActual();
+            Moto c = new Moto(placa,cc,propietario);
+            Celda celda = new Celda(c,f);
+            celdasMoto.add(celda);
+            //System.out.print("Ingreso un carro:");
+            return true;
+        }else{
+            //System.out.print("Parqueadero lleno");
+        }
+        return false;
+    }
 
     public boolean sacarCarro(String placa){
         for(int i=0;i<celdasCarro.size();i++){
-            if(celdasCarro.get(i).getCarro().getPlaca().equals(placa)){
+            if(celdasCarro.get(i).getVehiculo().getPlaca().equals(placa)){
                 //generarCobro(celdasCarro.get(i).getFecha().getHora(),Calendar.HOUR_OF_DAY);
             	celdasCarro.remove(i);
             	return true;
@@ -66,9 +82,20 @@ public class Parqueadero {
         }
         return false;
     }
+    
+    public boolean sacarMoto(String placa){
+        for(int i=0;i<celdasMoto.size();i++){
+            if(celdasMoto.get(i).getVehiculo().getPlaca().equals(placa)){
+                //generarCobro(celdasCarro.get(i).getFecha().getHora(),Calendar.HOUR_OF_DAY);
+            	celdasMoto.remove(i);
+            	return true;
+            }
+        }
+        return false;
+    }
 
-    //Metodo que calcula el total a pagar
-    public int generarCobro(Fecha fechaEntrada, Fecha fechaSalida){
+  //Metodo que calcula el total a pagar de los carros
+    public int generarCobroCarros(Fecha fechaEntrada, Fecha fechaSalida){
         int horasTotales=(int)calcularHorasTotales(fechaEntrada, fechaSalida);
         int diasAPagar = horasTotales / 24;
         int horasAPagar=0;
@@ -77,7 +104,21 @@ public class Parqueadero {
         }else {
         	horasAPagar = horasTotales % 24;
         }        
-        int totalAPagar=(diasAPagar*8000)+(horasAPagar*1000);
+        int totalAPagar=(diasAPagar*DIACARRO)+(horasAPagar*HORACARRO);
+        return totalAPagar;
+    }
+    
+  //Metodo que calcula el total a pagar de las motos
+    public int generarCobroMotos(Fecha fechaEntrada, Fecha fechaSalida){
+        int horasTotales=(int)calcularHorasTotales(fechaEntrada, fechaSalida);
+        int diasAPagar = horasTotales / 24;
+        int horasAPagar=0;
+        if((horasTotales % 24)>=9 && (horasTotales % 24)<=23) {
+        	diasAPagar++;
+        }else {
+        	horasAPagar = horasTotales % 24;
+        }        
+        int totalAPagar=(diasAPagar*DIAMOTO)+(horasAPagar*HORAMOTO);
         return totalAPagar;
     }
     
@@ -91,16 +132,13 @@ public class Parqueadero {
     	//System.out.println("Modulo: "+(d2.getTime()-d1.getTime()) % (1000 * 60 * 60));
     	return dif;
     }
-
-    /*public boolean ingresarMoto(String placa, int cc, String propietario){
-        if(celdasMoto.size()<=20){
-            Moto m = new Moto(placa,cc,propietario);
-            celdasMoto.add(m);
-            System.out.print("Ingreso una moto");
-            return true;
-        }else{
-            System.out.print("Parqueadero lleno");
-        }
-        return false;
-    }*/
+    
+    public boolean picoYPlaca(String placa) {
+    	if(placa.startsWith("A")) {
+    		if(Calendar.DAY_OF_WEEK!=0 && Calendar.DAY_OF_WEEK!=1){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
 }

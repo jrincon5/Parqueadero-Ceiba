@@ -9,7 +9,7 @@ public interface IParqueadero {
     static final int DIAMOTO=4000;
     static final int MOTOALTOCILINDRAJE=2000;
 	
-	//Metodo que calcula la diferencia entre dos fechas y la devuelve en horas	
+	/*//Metodo que calcula la diferencia entre dos fechas y la devuelve en horas
     public static long calcularHorasTotales(Fecha entrada, Fecha salida) {
     	Date d1=entrada.getTime();
     	Date d2=salida.getTime();
@@ -20,8 +20,8 @@ public interface IParqueadero {
     	return dif;
     }
     
-  //Metodo que calcula el total a pagar de los carros
-    public static int generarCobroCarro(Fecha fechaEntrada, Fecha fechaSalida){
+    //Metodo que calcula el total a pagar de los carros
+    public static int generarCobroCarros(Fecha fechaEntrada, Fecha fechaSalida){
         int horasTotales=(int)calcularHorasTotales(fechaEntrada, fechaSalida);
         int diasAPagar = horasTotales / 24;
         int horasAPagar=0;
@@ -33,4 +33,18 @@ public interface IParqueadero {
         int totalAPagar=(diasAPagar*DIACARRO)+(horasAPagar*HORACARRO);
         return totalAPagar;
     }
+    
+  //Metodo que calcula el total a pagar de las motos
+    public static int generarCobroMotos(Fecha fechaEntrada, Fecha fechaSalida){
+        int horasTotales=(int)calcularHorasTotales(fechaEntrada, fechaSalida);
+        int diasAPagar = horasTotales / 24;
+        int horasAPagar=0;
+        if((horasTotales % 24)>=9 && (horasTotales % 24)<=23) {
+        	diasAPagar++;
+        }else {
+        	horasAPagar = horasTotales % 24;
+        }        
+        int totalAPagar=(diasAPagar*DIAMOTO)+(horasAPagar*HORAMOTO);
+        return totalAPagar;
+    }*/
 }
